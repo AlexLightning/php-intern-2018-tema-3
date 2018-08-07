@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Company;
 
 class CompaniesController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+
     public function __construct()
     {
         //
@@ -20,25 +17,29 @@ class CompaniesController extends Controller
      * Return all companies
      */
     public function showAllCompanies(){
-
-        $companies = Company::all();
-        
-        return json_encode($companies);
+        return json_encode(Company::all());
     }
 
     public function getCompanyById($id){
-        // $company = Company::getById($id);
-
-        $company = Company::find($id);
-
-
-        // return json_encode($company);
+        return json_encode(Company::find($id));
     }
 
-    public function getCompanyByType($type){
-        echo 2;
-        $companies = Company::where('type',$type)->get();
+    public function create(Request $request){
+        $company = Company::create($request->all());
+        return response()->json($company);
+    }
 
-        // return json_encode($companies);
+    public function update($id, Request $request){
+        $toUpdate = Company::find($id);
+        $toUpdate->name = $request->name;
+        $toUpdate->description = $request->description;
+        $toUpdate->save();
+        return response()->json($toUpdate);
+    }
+
+    public function delete($id){
+        $toDelete = Company::find($id);
+        $toDelete->delete();
+        return response("Delete done!");
     }
 }
